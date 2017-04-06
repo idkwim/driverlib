@@ -80,13 +80,47 @@ SERVICE_ERROR_IGNORE = 0x00000000
 SERVICE_ERROR_NORMAL = 0x00000001
 SERVICE_ERROR_SEVERE = 0x00000002
 
+#file constants - see https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx
+
+FILE_SHARE_DELETE = 0x00000004
+FILE_SHARE_READ = 0x00000001
+FILE_SHARE_WRITE = 0x00000002
+
+CREATE_ALWAYS = 2
+CREATE_NEW = 1
+OPEN_ALWAYS = 4
+OPEN_EXISTING = 3
+TRUNCATE_EXISTING = 5
+
+FILE_ATTRIBUTE_ARCHIVE = 0x20
+FILE_ATTRIBUTE_ENCRYPTED = 0x4000
+FILE_ATTRIBUTE_HIDDEN = 0x2
+FILE_ATTRIBUTE_NORMAL = 0x80
+FILE_ATTRIBUTE_OFFLINE = 0x1000
+FILE_ATTRIBUTE_READONLY = 0x1
+FILE_ATTRIBUTE_SYSTEM = 0x4
+FILE_ATTRIBUTE_TEMPORARY = 0x100
+
+FILE_FLAG_BACKUP_SEMANTICS = 0x02000000
+FILE_FLAG_DELETE_ON_CLOSE = 0x04000000
+FILE_FLAG_NO_BUFFERING = 0x20000000
+FILE_FLAG_OPEN_NO_RECALL = 0x00100000
+FILE_FLAG_OPEN_REPARSE_POINT = 0x00200000
+FILE_FLAG_OVERLAPPED = 0x40000000
+FILE_FLAG_POSIX_SEMANTICS = 0x0100000
+FILE_FLAG_RANDOM_ACCESS = 0x10000000
+FILE_FLAG_SESSION_AWARE = 0x00800000
+FILE_FLAG_SEQUENTIAL_SCAN = 0x08000000
+FILE_FLAG_WRITE_THROUGH = 0x80000000
+
 class Driver:
 
     def __init__(self, path, name):
         self.path = path 
         self.name = name
-
-    def open_device(self, access=GENERIC_READ | GENERIC_WRITE, mode=FILE_SHARE_READ | FILE_SHARE_WRITE, creation=OPEN_EXISTING, flags=FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED):
+        self.handle = None
+        
+    def open_device(self, access=GENERIC_READ | GENERIC_WRITE, mode=0, creation=OPEN_EXISTING, flags=FILE_ATTRIBUTE_NORMAL):
         """See: CreateFile function
         http://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx
         """
@@ -101,7 +135,8 @@ class Driver:
                 wintypes.HANDLE]                    # _In_opt_      HANDLE hTemplateFile
         CreateFile_Fn.restype = wintypes.HANDLE
 
-        self.handle = wintypes.HANDLE(CreateFile_Fn(self.path,
+        
+        self.handle = wintypes.HANDLE(CreateFile_Fn('\\\\.\\' + self.name,
                              access,
                              mode,
                              NULL,
@@ -124,11 +159,10 @@ class Driver:
                 LPDWORD,                            # _Out_opt_     LPDWORD lpBytesReturned
                 LPOVERLAPPED]                       # _Inout_opt_   LPOVERLAPPED lpOverlapped
         DeviceIoControl_Fn.restype = wintypes.BOOL
-
+        print ioctl
         # allocate a DWORD, and take its reference
         dwBytesReturned = wintypes.DWORD(0)
         lpBytesReturned = ctypes.byref(dwBytesReturned)
-
         status = DeviceIoControl_Fn(self.handle,
                       ioctl,
                       inbuf,
