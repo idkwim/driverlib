@@ -1,16 +1,18 @@
 # driverlib
-A little python library for working with Windows drivers.   
+A little python library/command line tool for working with Windows drivers.   
 
-Main usage - initialize the Driver class with the driver path and name, Driver(path, name).   
+###Main usage
+```
+Initialize the Driver class with the driver path and name, Driver(path, name).   
 Driver.load() to load it.   
 Driver.unload() to unload it.   
 Driver.start() to start it.   
 Driver.stop() to stop it.   
 Driver.open_device() to get a handle to it.   
 Driver.send_ioctl(ioctl, inbuf, inbufsiz, outbuf, outbufsiz) to send an ioctl to it.   
+```
 
-
-Command line usage:
+###Command line usage
 
 ``` 
 You'll need to be running as admin...
@@ -28,4 +30,4 @@ optional arguments:
   --stop PE_PATH    stop driver
 ```
 
-![]()
+![](https://raw.githubusercontent.com/sam-b/driverlib/master/example.png)
