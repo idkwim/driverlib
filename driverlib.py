@@ -395,3 +395,56 @@ def remove_driver(SchSCManager, driver_name):
     close_service_handle(schService)
 
     return ret
+	
+	
+if __name__ == "__main__":
+	import argparse
+	import sys
+	if ctypes.windll.shell32.IsUserAnAdmin() == 0:
+		print "You'll need to be running as admin..."
+		sys.exit(1)
+	parser = argparse.ArgumentParser(description="A tool for loading/unloading/starting/stopping windows drivers")
+	group = parser.add_mutually_exclusive_group()
+	group.add_argument('--load', help='load driver', metavar=('PE_PATH'))
+	group.add_argument('--unload', help='unload driver', metavar=('PE_PATH'))
+	group.add_argument('--start', help='start driver', metavar=('PE_PATH'))
+	group.add_argument('--stop', help='stop driver', metavar=('PE_PATH'))
+	args = parser.parse_args()
+	if args.load:
+		path = args.load
+		name = path.split('\\')[-1]
+		driver = Driver(path, name)
+		status = driver.load()
+		if status:
+			print('Driver loaded as {}'.format(name))
+		else:
+			print('Something went horribly wrong')
+	elif args.unload:
+		path = args.unload
+		name = path.split('\\')[-1]
+		driver = Driver(path, name)
+		status = driver.unload()
+		if status:
+			print('Unloaded driver: {}'.format(name))
+		else:
+			print('Something went horribly wrong')
+	elif args.start:
+		path = args.start
+		name = path.split('\\')[-1]
+		driver = Driver(path, name)
+		status = driver.start()
+		if status:
+			print('Started driver: {}'.format(name))
+		else:
+			print('Something went horribly wrong')
+	elif args.stop:
+		path = args.stop
+		name = path.split('\\')[-1]
+		driver = Driver(path, name)
+		status = driver.stop()
+		if status:
+			print('Stopped driver: {}'.format(name))
+		else:
+			print('Something went horribly wrong')
+	else:
+		parser.print_help()
