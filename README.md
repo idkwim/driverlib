@@ -1,7 +1,7 @@
 # driverlib
 A little python library/command line tool for working with Windows drivers.   
 
-###Main usage
+### Main usage
 ```
 Initialize the Driver class with the driver path and name, Driver(path, name).   
 Driver.load() to load it.   
@@ -12,7 +12,7 @@ Driver.open_device() to get a handle to it.
 Driver.send_ioctl(ioctl, inbuf, inbufsiz, outbuf, outbufsiz) to send an ioctl to it.   
 ```
 
-###Command line usage
+### Command line usage
 
 ``` 
 You'll need to be running as admin...
