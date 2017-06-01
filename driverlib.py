@@ -412,7 +412,7 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	if args.load:
 		path = args.load
-		name = path.split('\\')[-1]
+		name = path.split('\\')[-1].split('.')[0]
 		driver = Driver(path, name)
 		status = driver.load()
 		if status:
@@ -421,7 +421,7 @@ if __name__ == "__main__":
 			print('Something went horribly wrong')
 	elif args.unload:
 		path = args.unload
-		name = path.split('\\')[-1]
+		name = path.split('\\')[-1].split('.')[0]
 		driver = Driver(path, name)
 		status = driver.unload()
 		if status:
@@ -430,7 +430,7 @@ if __name__ == "__main__":
 			print('Something went horribly wrong')
 	elif args.start:
 		path = args.start
-		name = path.split('\\')[-1]
+		name = path.split('\\')[-1].split('.')[0]
 		driver = Driver(path, name)
 		status = driver.start()
 		if status:
@@ -439,7 +439,7 @@ if __name__ == "__main__":
 			print('Something went horribly wrong')
 	elif args.stop:
 		path = args.stop
-		name = path.split('\\')[-1]
+		name = path.split('\\')[-1].split('.')[0]
 		driver = Driver(path, name)
 		status = driver.stop()
 		if status:
